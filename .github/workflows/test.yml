@@ -1,0 +1,29 @@
+name: Test formula
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  install:
+    runs-on: macos-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tap this repository
+        run: brew tap warrnio/tap "https://github.com/${GITHUB_REPOSITORY}.git"
+
+      - name: Check formula style
+        run: brew style warrnio/tap/warrn
+
+      - name: Install and test Warrn
+        run: |
+          brew install warrnio/tap/warrn
+          warrn --version
+          brew test warrnio/tap/warrn
